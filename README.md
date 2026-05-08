@@ -2,6 +2,8 @@
 
 This is a system I use to be more consistent about deep work. I try to do 3 90 minute sessions a day.
 
+![3 Protocol Screenshot](docs/3.png)
+
 ## Setup & Build
 
 ### Prerequisites
