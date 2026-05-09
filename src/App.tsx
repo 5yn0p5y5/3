@@ -4,6 +4,8 @@ import { Timer } from './components/Timer';
 import { CommandPalette } from './components/CommandPalette';
 import { useProtocol, DEBUG_ENABLED } from './hooks/useProtocol';
 import { MOTD } from './components/MOTD';
+import { NotePrompt } from './components/NotePrompt';
+import { NoteSummary } from './components/NoteSummary';
 
 function App() {
   const { 
@@ -14,10 +16,12 @@ function App() {
     skipPhase, 
     injectMockData,
     exportData,
-    importData
+    importData,
+    addNote
   } = useProtocol();
 
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [isNotePromptOpen, setIsNotePromptOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -26,7 +30,7 @@ function App() {
         setIsPaletteOpen(prev => !prev);
       }
       
-      if (e.key === ' ' && !isPaletteOpen) {
+      if (e.key === ' ' && !isPaletteOpen && !isNotePromptOpen) {
         e.preventDefault();
         if (state.phase === 'IDLE') {
           startNext();
@@ -38,11 +42,16 @@ function App() {
       if (e.key === 'Escape' && isPaletteOpen) {
         setIsPaletteOpen(false);
       }
+
+      if (e.key === 'n' && !isPaletteOpen && !isNotePromptOpen) {
+        e.preventDefault();
+        setIsNotePromptOpen(true);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPaletteOpen, state.phase, startNext, toggleTimer]);
+  }, [isPaletteOpen, isNotePromptOpen, state.phase, startNext, toggleTimer]);
 
   useEffect(() => {
     if (state.phase === 'IDLE') {
@@ -69,7 +78,7 @@ function App() {
       </header>
 
       <div className="dashboard-grid">
-        <div className="dashboard-half">
+        <div className="dashboard-item">
           <Timer 
             timeLeft={state.timeLeft} 
             phase={state.phase} 
@@ -77,7 +86,14 @@ function App() {
             isActive={state.isActive}
           />
         </div>
-        <div className="dashboard-half">
+
+        {state.phase === 'IDLE' && state.notes.length > 0 && (
+          <div className="dashboard-item">
+            <NoteSummary notes={state.notes} />
+          </div>
+        )}
+
+        <div className="dashboard-item">
           <Heatmap history={state.history} />
         </div>
       </div>
@@ -86,6 +102,7 @@ function App() {
         <div className="flex gap-12">
           <span>CTRL+P OR / FOR PALETTE</span>
           <span>SPACE TO START/PAUSE</span>
+          <span>N TO NOTE</span>
         </div>
         <span>V1.1.0</span>
       </footer>
@@ -99,7 +116,14 @@ function App() {
         onInjectMock={injectMockData}
         onExport={exportData}
         onImport={importData}
+        onAddNote={() => setIsNotePromptOpen(true)}
         debugEnabled={DEBUG_ENABLED}
+      />
+
+      <NotePrompt 
+        isOpen={isNotePromptOpen}
+        onClose={() => setIsNotePromptOpen(false)}
+        onSubmit={addNote}
       />
     </main>
   );

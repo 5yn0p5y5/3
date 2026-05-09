@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Terminal, Play, RotateCcw, FastForward, Database, X, Download, Upload } from 'lucide-react';
+import { Terminal, Play, RotateCcw, FastForward, Database, X, Download, Upload, Lightbulb } from 'lucide-react';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface CommandPaletteProps {
   onInjectMock: () => void;
   onExport: () => void;
   onImport: (file: File) => void;
+  onAddNote: () => void;
   debugEnabled: boolean;
 }
 
@@ -23,6 +24,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onInjectMock,
   onExport,
   onImport,
+  onAddNote,
   debugEnabled
 }) => {
   const [search, setSearch] = useState('');
@@ -34,6 +36,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   const commands = [
     { id: 'start', label: 'Start Next Block', icon: Play, action: onStartNext },
+    { id: 'note', label: 'Add Note / Capture Idea', icon: Lightbulb, action: onAddNote },
     { id: 'reset', label: 'Reset Protocol', icon: RotateCcw, action: onReset },
     { id: 'export', label: 'EXPORT_DATA (BACKUP)', icon: Download, action: onExport },
     { id: 'import', label: 'IMPORT_DATA (RESTORE)', icon: Upload, action: () => fileInputRef.current?.click() },

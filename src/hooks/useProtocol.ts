@@ -9,6 +9,7 @@ export interface ProtocolState {
   isActive: boolean;
   history: Record<string, number>;
   lastUpdate: string; // ISO date string
+  notes: string[];
 }
 
 const STORAGE_KEY = 'protocol-3-state';
@@ -36,12 +37,13 @@ export function useProtocol() {
           currentBlock: 0,
           timeLeft: 0,
           isActive: false,
-          lastUpdate: today
+          lastUpdate: today,
+          notes: []
         };
       }
       
       // Otherwise, restore the session (but keep it paused)
-      return { ...parsed, isActive: false };
+      return { ...parsed, notes: parsed.notes || [], isActive: false };
     }
     
     return {
@@ -51,6 +53,7 @@ export function useProtocol() {
       isActive: false,
       history: {},
       lastUpdate: today,
+      notes: []
     };
   });
 
@@ -70,7 +73,8 @@ export function useProtocol() {
           currentBlock: 0,
           timeLeft: 0,
           isActive: false,
-          lastUpdate: today
+          lastUpdate: today,
+          notes: []
         }));
       }
     }, 60000); // Check every minute
@@ -144,10 +148,18 @@ export function useProtocol() {
           phase: 'WARMUP',
           timeLeft: 5 * 60,
           isActive: true,
+          notes: [], // Clear notes when starting a new block
         };
       }
       return prev;
     });
+  };
+
+  const addNote = (text: string) => {
+    setState(prev => ({
+      ...prev,
+      notes: [...prev.notes, text]
+    }));
   };
 
   const toggleTimer = () => {
@@ -155,7 +167,7 @@ export function useProtocol() {
   };
 
   const resetTimer = () => {
-    setState(prev => ({ ...prev, isActive: false, timeLeft: 0, phase: 'IDLE', currentBlock: 0 }));
+    setState(prev => ({ ...prev, isActive: false, timeLeft: 0, phase: 'IDLE', currentBlock: 0, notes: [] }));
   };
 
   // Debug methods
@@ -215,5 +227,6 @@ export function useProtocol() {
     injectMockData,
     exportData,
     importData,
+    addNote,
   };
 }

@@ -123,6 +123,13 @@ h1, h2, h3 {
 .z-50 { z-index: 50; }
 .overflow-hidden { overflow: hidden; }
 .backdrop-blur-sm { backdrop-filter: blur(4px); }
+.backdrop-blur-md { backdrop-filter: blur(12px); }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.top-4 { top: 1rem; }
+.top-6 { top: 1.5rem; }
+.right-4 { right: 1rem; }
+.right-6 { right: 1.5rem; }
 .hidden { display: none; }
 
 /* Responsive Layout */
@@ -132,15 +139,18 @@ h1, h2, h3 {
   width: 100%;
   flex: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  gap: 2rem;
+  padding: 0 2rem;
 }
 
-.dashboard-half {
-  width: 50%;
+.dashboard-item {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  min-width: 0;
 }
 
 @media (max-width: 1200px) {
