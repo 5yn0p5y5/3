@@ -16,7 +16,7 @@ export const Heatmap: React.FC<HeatmapProps> = ({ history }) => {
   for (let i = totalDays - 1; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     const count = history[dateStr] || 0;
     cells.push({ dateStr, count });
   }

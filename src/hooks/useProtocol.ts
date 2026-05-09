@@ -15,9 +15,14 @@ const STORAGE_KEY = 'protocol-3-state';
 
 export const DEBUG_ENABLED = true; // Toggle for debug features
 
+const getLocalDateString = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export function useProtocol() {
   const [state, setState] = useState<ProtocolState>(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const saved = localStorage.getItem(STORAGE_KEY);
     
     if (saved) {
@@ -50,14 +55,14 @@ export function useProtocol() {
   });
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, lastUpdate: today }));
   }, [state]);
 
   // Periodic check for day change (in case the app is left open across midnight)
   useEffect(() => {
     const interval = setInterval(() => {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getLocalDateString();
       if (state.lastUpdate !== today) {
         setState(prev => ({
           ...prev,
@@ -73,7 +78,7 @@ export function useProtocol() {
   }, [state.lastUpdate]);
 
   const addBlockToHistory = useCallback(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     setState(prev => {
       const currentCount = prev.history[today] || 0;
       return {
@@ -178,7 +183,7 @@ export function useProtocol() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `protocol-3-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `protocol-3-backup-${getLocalDateString()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

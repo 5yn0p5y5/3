@@ -44,6 +44,21 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPaletteOpen, state.phase, startNext, toggleTimer]);
 
+  useEffect(() => {
+    if (state.phase === 'IDLE') {
+      if (state.currentBlock > 0) {
+        document.title = '3 - DONE';
+      } else {
+        document.title = '3';
+      }
+    } else {
+      const mins = Math.floor(state.timeLeft / 60);
+      const secs = state.timeLeft % 60;
+      const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+      document.title = `3 - ${timeStr}`;
+    }
+  }, [state.timeLeft, state.phase, state.currentBlock]);
+
   return (
     <main className="flex-1 flex flex-col p-12 w-full h-screen">
       <header className="flex justify-between items-start p-4">
